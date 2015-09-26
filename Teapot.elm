@@ -35,9 +35,7 @@ transform angle1 angle2 point3D =
 
 transformFace : Float -> Float -> Geometry.Poly -> Geometry.Poly
 transformFace angle1 angle2 face =
-  Geometry.Poly face.illumination
-       (List.map (transform angle1 angle2) face.vertices)
-       face.velocity
+  { face | vertices <- (List.map (transform angle1 angle2) face.vertices) }
 
 
 toScreen : Geometry.Point3D -> Geometry.Point2D
@@ -75,8 +73,8 @@ facesCamera face =
     n.z > 0
 
 
-illumination : Geometry.Poly -> Float
-illumination face =
+light : Geometry.Poly -> Float
+light face =
   Geometry.cosAngle (Geometry.normal face) Model.lightVector
 
 illuminationToColour : Float -> String
@@ -89,7 +87,7 @@ illuminationToColour l =
 
 illuminate : Geometry.Poly -> Geometry.Poly
 illuminate face =
-  Geometry.Poly (illumination face) face.vertices face.velocity
+  { face | illumination <- (light face) }
 
 
 
