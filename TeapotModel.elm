@@ -4,6 +4,11 @@ import Geometry
 import Mouse
 import Time
 
+
+nth : List a -> Int -> Maybe a
+nth xs n = List.head ( List.drop n xs )
+
+
 -- MODEL
 
 
@@ -17,16 +22,14 @@ mousePos =
   Signal.sampleOn delta Mouse.position
 
 
-nth : List a -> Int -> Maybe a
-nth xs n = List.head ( List.drop n xs )
 
+makeVert i = Maybe.withDefault (Geometry.Point3D 0 0 0) ( nth verts i )
 
-getVert : Int -> Geometry.Point3D
-getVert i = Maybe.withDefault (Geometry.newPoint3D [0,0,0]) ( nth verts i )
-
-
-faceToVerts : List Int -> List Geometry.Point3D
-faceToVerts vs = List.map getVert vs
+faceToVerts : List Int -> Geometry.Poly
+faceToVerts vs =
+  Geometry.Poly 1.0
+                (List.map makeVert vs)
+                (Geometry.Point3D 0 0 0)
 
 lightVector = Geometry.Point3D 1 1 1
 

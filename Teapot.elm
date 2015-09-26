@@ -33,9 +33,11 @@ transform angle1 angle2 point3D =
     |> Geometry.rotateY (Geometry.degToRad angle2)
     |> Geometry.rotateZ (Geometry.degToRad 10)
 
-transformFace : Float -> Float -> List Geometry.Point3D -> List Geometry.Point3D
+transformFace : Float -> Float -> Geometry.Poly -> Geometry.Poly
 transformFace angle1 angle2 face =
-  List.map (transform angle1 angle2) face
+  Geometry.Poly face.illumination
+       (List.map (transform angle1 angle2) face.vertices)
+       face.velocity
 
 
 toScreen : Geometry.Point3D -> Geometry.Point2D
@@ -46,9 +48,9 @@ toScreen point3D =
     |> translate
 
 
-faceToScreen : (Float, List Geometry.Point3D) -> (Float, List Geometry.Point2D)
-faceToScreen (light, face) =
-  (light, List.map toScreen face)
+faceToScreen : Geometry.Poly -> (Float, List Geometry.Point2D)
+faceToScreen face =
+  (face.illumination, List.map toScreen face.vertices)
 
 
 pToStr : Geometry.Point2D -> String
@@ -66,14 +68,14 @@ polyToSvg (light, poly) =
   polygon [ fill (illuminationToColour light), points (pvecToStr poly) ] []
 
 
-facesCamera : List Geometry.Point3D -> Bool
+facesCamera : Geometry.Poly -> Bool
 facesCamera face =
   let n = Geometry.normal face
   in
-    True --    n.z > 0
+    n.z > 0
 
 
-illumination : List Geometry.Point3D -> Float
+illumination : Geometry.Poly -> Float
 illumination face =
   Geometry.cosAngle (Geometry.normal face) Model.lightVector
 
@@ -85,9 +87,9 @@ illuminationToColour l =
    in
       "rgb(" ++ r ++ "," ++ g ++ "," ++ b ++ ")"
 
-illuminate : List Geometry.Point3D -> (Float, List Geometry.Point3D)
+illuminate : Geometry.Poly -> Geometry.Poly
 illuminate face =
-  (illumination face, face)
+  Geometry.Poly (illumination face) face.vertices face.velocity
 
 
 
