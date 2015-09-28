@@ -12,21 +12,10 @@ nth xs n = List.head ( List.drop n xs )
 -- MODEL
 
 
-delta : Signal Time.Time
-delta =
-  Signal.map Time.inSeconds (Time.fps 10)
-
-
-mousePos : Signal (Int,Int)
-mousePos =
-  Signal.sampleOn delta Mouse.position
-
-
-
 makeVert i = Maybe.withDefault (Geometry.Point3D 0 0 0) ( nth verts i )
 
-faceToVerts : List Int -> Geometry.Poly
-faceToVerts vs =
+vertsToPoly : List Int -> Geometry.Poly
+vertsToPoly vs =
   Geometry.Poly 1.0
                 (List.map makeVert vs)
                 (Geometry.Point3D 0 0 0)
@@ -516,7 +505,7 @@ verts = List.map Geometry.newPoint3D [
   [-0.25, 0, 0.712891]]
 
 faces =
-  List.map faceToVerts
+  List.map vertsToPoly
     [[324, 306, 304, 317],
       [306, 283, 281, 304],
       [283, 248, 246, 281],
@@ -966,3 +955,6 @@ faces =
       [277, 294, 301, 280],
       [294, 297, 310, 301]]
 
+type alias Model = {faces: List Geometry.Poly, rotation : Geometry.Point3D, bfcOn : Bool, illuminationOn : Bool, rotationOn : Bool, delta : Float}
+
+initialModel = Model (List.map (Geometry.translatePoly (Geometry.Point3D -0.5 0 0)) faces) (Geometry.Point3D 0.0 0.0 0.0) False False False 0.0001

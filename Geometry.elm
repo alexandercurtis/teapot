@@ -21,7 +21,7 @@ newPoint2D [x,y] = Point2D x y
 
 
 type alias Point3D = {x: Float, y: Float, z: Float}
-newPoint3D [x,y,z] = Point3D x y z
+newPoint3D [x,z,y] = Point3D x (-1 * y) z
 
 
 
@@ -34,6 +34,9 @@ sub : Point3D -> Point3D -> Point3D
 sub a b =
   Point3D (a.x - b.x) (a.y - b.y) (a.z - b.z)
 
+scale : Float -> Point3D -> Point3D
+scale s a =
+  Point3D (s * a.x) (s * a.y) (s * a.z)
 
 -- Returns a vector representing the edge between the specified vertices
 getEdgeVec : Poly -> Int -> Int -> Point3D
@@ -70,9 +73,18 @@ rotateZ θ point3D =
     Point3D (c * point3D.x - s * point3D.y) (s * point3D.x + c * point3D.y) point3D.z
 
 
-translate : Float -> Float -> Point2D -> Point2D
-translate deltaX deltaY point2D =
+translate2D : Float -> Float -> Point2D -> Point2D
+translate2D deltaX deltaY point2D =
   Point2D (point2D.x + deltaX) (point2D.y + deltaY)
+
+
+translate3D : Point3D -> Point3D -> Point3D
+translate3D offset p =
+  Point3D (p.x + offset.x) (p.y + offset.y) (p.z + offset.z)
+
+translatePoly : Point3D -> Poly -> Poly
+translatePoly offset poly =
+  { poly | vertices <- List.map (translate3D offset) poly.vertices }
 
 zoom : Float -> Point2D -> Point2D
 zoom scale point2D =

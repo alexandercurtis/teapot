@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Teapot Simulator</title>
+    <link href="css/main.css" rel="stylesheet">
+    <script type="text/javascript" src="js/app.js"></script>
+  </head>
+  <body>
+   <div>
+    <div><input id="cbrot" onclick="return sendRot(this);" type="checkbox" checked="false"></input><label for="cbrot">Rotation</label></div>
+    <div><input id="cbill" onclick="return sendIll(this);" type="checkbox" checked="false"></input><label for="cbill">Illumination</label></div>
+    <div><input id="bfc" onclick="return sendBfc(this);" type="checkbox" checked="false"></input><label for="cbbfc">Back-face culling</label></div>
+    <div><button onclick="return sendDnp(this);">DO NOT PRESS</button></div>
+   </div>
+   <p id="fps">? fps</p>
+   <div id="app"></div>
+  </body>
+
+  <script type="text/javascript">
+    var elmDiv = document.getElementById('app');
+    var elmApp = Elm.embed(Elm.Teapot, elmDiv, { dnp: false, ill: false, bfc: false, rot: false });
+
+    elmApp.ports.fps.subscribe(function(fps) {
+        var elmFps = document.getElementById('fps');
+        elmFps.innerHTML = fps + " fps";
+      });
+
+    function sendDnp(elem) {
+      elmApp.ports.dnp.send(true);
+      return false;
+    }
+    function sendIll(elem) {
+      elmApp.ports.ill.send(elem.checked);
+      return true;
+    }
+    function sendBfc(elem) {
+      elmApp.ports.bfc.send(elem.checked);
+      return true;
+    }
+    function sendRot(elem) {
+      elmApp.ports.rot.send(elem.checked);
+      return true;
+    }
+  </script>
+
+
+</html>
+

@@ -3,5 +3,6 @@ The Utah Teapot in SVG
 
 Learning Elm programming by drawing a teapot.
 
-Install Elm, then run ``elm make Teapot.elm --output teapot.html``
-
+1. Install Elm
+2. Run ``elm make Teapot.elm --output js/app.js``
+2. Open index.html
