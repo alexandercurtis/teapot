@@ -178,7 +178,7 @@ explodePoly poly =
   let
     newVelocity = (Maybe.withDefault (Geometry.Point3D 0 0 0) (List.head poly.vertices))
   in
-    { poly | velocity <- (Geometry.scale 0.2 (Geometry.Point3D newVelocity.x newVelocity.y (newVelocity.z - 5))) }
+    { poly | velocity <- (Geometry.scale 0.5 (Geometry.Point3D (newVelocity.x) (newVelocity.y + 0.5) (newVelocity.z))) }
 
 explode : Model.Model -> Model.Model
 explode model =
